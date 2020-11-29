@@ -1,0 +1,13 @@
+.root {
+  display: flex;
+
+  .list {
+    list-style: none;
+  }
+
+  .fixedButton {
+    position: fixed;
+    right: 5%;
+    bottom: 5%;
+  }
+}
