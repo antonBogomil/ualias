@@ -1,8 +1,9 @@
 import {Store} from "../";
 import TeamsData from "./teams";
-import {action, observable} from "mobx";
 import WordsStore from "./words";
 import Settings from "./settings";
+import {action, observable} from "mobx";
+import Table from "./table";
 
 
 class DataStore {
@@ -12,12 +13,12 @@ class DataStore {
   readonly results: {};
   readonly words: WordsStore;
   readonly settings: Settings
-
-  @observable activeTeamId: string = null
+  @observable table: Table;
 
   constructor(root: Store) {
 	this.teams = new TeamsData(root)
 	this.words = new WordsStore()
+	this.table = new Table([])
 	this.settings = new Settings()
 	this.play = {}
 	this.results = {}
@@ -25,10 +26,16 @@ class DataStore {
 
 
   @action
-  setActiveTeam(id: string) {
-	this.activeTeamId = id
+  createTable = () => {
+	this.table = new Table(this.teams.getTeams())
+  }
+
+  @action
+  clearTable = () => {
+	this.table = null
   }
 
 }
+
 
 export default DataStore

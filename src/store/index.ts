@@ -1,6 +1,4 @@
-import {serialzr} from "../tools";
-import {autorun, makeObservable, observable, toJS} from "mobx";
-import storage from "../tools/LocalStorage";
+import {makeObservable, observable} from "mobx";
 import DataStore from "./data";
 import Pages from "./pages";
 import Routing from "./routing";
@@ -17,20 +15,13 @@ export class Store {
 	this.routing = new Routing()
 	makeObservable(this)
   }
+
+  async init() {
+	return this.data.teams.init()
+  }
 }
 
-function autoSave() {
-  let firstRun = true;
-  autorun(() => {
-	const data = toJS(store)
-	if (!firstRun) {
-	  storage.set(serialzr(data));
-	}
-	firstRun = false;
-  });
-}
+const store = new Store({})
 
-const store = new Store(storage.get())
-// autoSave();
 export default store
 

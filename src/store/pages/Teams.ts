@@ -1,9 +1,8 @@
 import {action, computed, makeObservable, observable} from "mobx";
 import TeamsData from "../data/teams";
-import {Store} from "../index";
-import TeamModel from "../../models/Team";
 import React from "react";
 import {ErrorCodes} from "../../constants/teams";
+import {Store} from "../index";
 
 class TeamsPage {
   // readonly root: Store
@@ -12,13 +11,12 @@ class TeamsPage {
   @observable isOpenModal: boolean
   @observable errors: Map<string, boolean> = new Map()
 
-  constructor(teamsData: TeamsData, initialData: TeamModel[]) {
-	this.data = teamsData
+  constructor(root: Store) {
+	this.data = root.data.teams
 	this.isOpenModal = false
 	this.name = 'Молодая команда'
 	makeObservable(this)
   }
-
 
   @computed
   get isReady() {
@@ -98,6 +96,10 @@ class TeamsPage {
   @action handleCancel = () => {
 	this.handleToggleModal()
 	this.name = ''
+  }
+  @action handleDelete = (id: string) => {
+	this.data.remove(id)
+	this.data.save()
   }
 
 

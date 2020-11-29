@@ -7,14 +7,16 @@ import FooterWrapper from "../../components/footer";
 import dict from "../../store/dictionary";
 import {GamePanel, Navigation, PostRoundComponent, PreRoundComponent} from "./components";
 import RoundStore from "../../store/data/Round";
+import {Component} from "react";
+import {withRouter, RouteComponentProps} from 'react-router-dom';
+import {Store} from "../../store";
 
 
-type IProps = {
-  store?: DataStore
+interface IProps extends RouteComponentProps<any> {
+  store?: Store
 }
 
-
-class Playing extends React.Component<IProps> {
+export class Playing extends React.Component<IProps> {
   roundStore: RoundStore
 
   @observable timer = null
@@ -33,14 +35,25 @@ class Playing extends React.Component<IProps> {
 	})
   }
 
+
   componentDidMount() {
-	this.roundStore = new RoundStore(this.props.store.settings)
+	this.checkAccess()
+	this.roundStore = new RoundStore(this.props.store.data.settings)
   }
+
+  checkAccess() {
+	if (this.props.store.pages.teams.isReady) {
+	  return true
+	} else {
+	  this.props.history.push('/teams')
+	}
+  }
+
 
   @action setRunning = (isRunning: boolean) => this.isRunning = isRunning
 
   @computed get isTimeout() {
-	return this.time === this.props.store.settings.roundTimeSeconds
+	return this.time === this.props.store.data.settings.roundTimeSeconds
   }
 
   @action setPause = (pause: boolean) => this.pause = pause
@@ -74,7 +87,7 @@ class Playing extends React.Component<IProps> {
   @action runTimer = () => {
 	this.timer = setInterval(this.incrementTime, 1000)
   }
-  @action nextWord = () => this.displayWord = this.props.store.words.next()
+  @action nextWord = () => this.displayWord = this.props.store.data.words.next()
 
   handeChange = (word: string, value: boolean) => {
 	return () => {
@@ -118,4 +131,6 @@ class Playing extends React.Component<IProps> {
   }
 }
 
-export default withStore((store) => store.data)(Playing);
+const PlayingWtihStore = withStore((store) => ({store}))(Playing);
+const PlayingWtihStoreReuter = withRouter(PlayingWtihStore)
+export default PlayingWtihStoreReuter

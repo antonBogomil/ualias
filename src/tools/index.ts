@@ -13,7 +13,7 @@ export function generateId() {
 
 export function withStore(mapStore: (store: Store) => any) {
   return function (WrappedComponent: IReactComponent) {
-	return inject(({store}) => ({store: mapStore(store)}))(observer(WrappedComponent))
+	return inject(({store}) => ({...mapStore(store)}))(observer(WrappedComponent))
   }
 }
 
@@ -30,7 +30,7 @@ export function serialzr(object: Object): string {
   });
 }
 
-export function deserialize(serializedString: string): Object {
+export function deserialize(serializedString: string) {
   return JSON.parse(serializedString)
 }
 

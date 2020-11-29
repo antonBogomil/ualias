@@ -1,16 +1,18 @@
 const path = require('path')
 const {merge} = require('webpack-merge')
 const baseConfig = require('./webpack.config.base')
+const {SourceMapDevToolPlugin} = require("webpack");
 module.exports = merge(baseConfig,
   {
 	mode: 'development',
 	devtool: 'eval-cheap-module-source-map',
 	devServer: {
-	  contentBase: path.join(__dirname, 'dist'),
 	  compress: true,
 	  historyApiFallback: true,
 	  port: 9000,
+	  contentBase: "/dist",
 	},
+
 	module: {
 	  rules: [
 		{
@@ -19,11 +21,10 @@ module.exports = merge(baseConfig,
 			{
 			  loader: "ts-loader", options: {
 				transpileOnly: true,
-
 			  }
 			}
 		  ],
-		  exclude: /node_modules/,
+		  exclude: path.resolve(__dirname, "node_modules")
 		},
 		{
 		  test: /\.scss$/i,
@@ -47,10 +48,11 @@ module.exports = merge(baseConfig,
 				importLoaders: 1,
 			  }
 			},
-			"sass-loader"
-		  ]
+			"sass-loader",
+		  ],
+		  exclude: path.resolve(__dirname, "node_modules")
 		}
 	  ],
-	},
-  }
+	}
+  },
 )

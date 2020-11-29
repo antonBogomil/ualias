@@ -57,12 +57,7 @@ module.exports = merge(base, {
 	  new HtmlWebpackPlugin({
 		template: `public/index.html`,
 	  }),
-	  new CleanWebpackPlugin(),
-
-	  withStat ? new BundleAnalyzerPlugin({
-		analyzerMode: "static",
-		reportFilename: "report.html",
-	  }) : {},
+	  new CleanWebpackPlugin()
 	],
   }
 )

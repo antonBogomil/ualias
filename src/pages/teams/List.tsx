@@ -12,10 +12,11 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import {observer} from "mobx-react";
 
 interface IProps {
-  items: any[]
+  items: any[],
+  onDelete: (id: string) => void
 }
 
-const List = observer(({items}: IProps) => {
+const List = observer(({items, onDelete}: IProps) => {
   return (
 	<StyledList>
 	  {items.map(item =>
@@ -27,7 +28,10 @@ const List = observer(({items}: IProps) => {
 			{item.name}
 		  </ListItemText>
 		  <ListItemSecondaryAction>
-			<IconButton aria-label="delete">
+			<IconButton
+			  onClick={(e) => onDelete(item.id)}
+			  aria-label="delete"
+			>
 			  <DeleteIcon/>
 			</IconButton>
 		  </ListItemSecondaryAction>

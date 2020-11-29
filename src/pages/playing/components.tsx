@@ -111,9 +111,12 @@ export function Navigation(
 			<Button color={"default"} onClick={handlePause}>Pause</Button>
 		) : (
 		  isTimeout ?
-			<ButtonLink to={'/results'} color={"primary"}>Next</ButtonLink>
+			<ButtonLink to={'/results'} color={"primary"}>{t('NEXT')}</ButtonLink>
 			:
-			<Button color={"default"} onClick={handleStart}>Start</Button>
+			<>
+			  <ButtonLink to={'/teams'} color={"primary"}>{t('BACK')}</ButtonLink>
+			  <Button color={"default"} onClick={handleStart}>{t('START')}</Button>
+			</>
 		)
 	  }
 	</>

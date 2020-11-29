@@ -2,6 +2,7 @@ import TeamModel from "../../../models/Team";
 import {generateId} from "../../../tools";
 import {Store} from "../../index";
 import {action, makeObservable, observable} from "mobx";
+import Api from "../../../api";
 
 
 class TeamsData {
@@ -9,16 +10,37 @@ class TeamsData {
   @observable teams: TeamModel[];
 
 
-  constructor(root: Store, initialData: TeamModel[] = []) {
+  constructor(root: Store) {
 	this.teams = []
-	this.createTeams(initialData)
 	this.root = root
 	makeObservable(this)
   }
 
-  create(name: string) {
-	const team = new TeamModel(generateId(), name)
-	return this.push(team)
+  init() {
+	this.fetch()
+  }
+
+  private fetch = async () => {
+	const res = await Api.getTeams()
+	res && res.map((item) => {
+	  this.push(new TeamModel(item.id, item.name))
+	})
+  }
+
+
+  save = async () => {
+	return Api.saveTeams(this.teams)
+  }
+
+
+  getTeams() {
+	return this.teams
+  }
+
+  create(name: string, id: string = generateId()) {
+	const team = new TeamModel(id, name)
+	this.push(team)
+	this.save()
   }
 
   getById(id: string): TeamModel {
@@ -47,17 +69,6 @@ class TeamsData {
 	this.teams = [...this.teams.filter(team => team.id !== id)]
   }
 
-  private createTeams(teamsData: TeamModel[]) {
-	try {
-	  teamsData.map(obj => this.create(obj.name))
-	} catch (e) {
-	  console.log(e);
-	}
-  }
-
-  toJson() {
-	return this.teams
-  }
 }
 
 export default TeamsData
