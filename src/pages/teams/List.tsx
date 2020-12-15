@@ -10,17 +10,19 @@ import {
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {observer} from "mobx-react";
+import classNames from "classnames";
 
 interface IProps {
   items: any[],
   onDelete: (id: string) => void
 }
 
+const styles = require('./style.scss')
 const List = observer(({items, onDelete}: IProps) => {
   return (
-	<StyledList>
+	<StyledList className={styles.list}>
 	  {items.map(item =>
-		<ListItem key={item.id}>
+		<ListItem key={item.id} className={classNames(styles.item, {[styles.active]: false})}>
 		  <ListItemAvatar>
 			<Avatar variant='circle'/>
 		  </ListItemAvatar>

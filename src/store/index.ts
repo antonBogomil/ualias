@@ -1,27 +1,30 @@
-import {makeObservable, observable} from "mobx";
+import {action, makeObservable, observable} from "mobx";
 import DataStore from "./data";
 import Pages from "./pages";
-import Routing from "./routing";
 
 
 export class Store {
   @observable readonly pages: Pages
   @observable readonly data: DataStore;
-  private routing: Routing;
 
-  constructor(initialData: any) {
+  constructor() {
 	this.data = new DataStore(this)
-	this.pages = new Pages(this, initialData)
-	this.routing = new Routing()
+	this.pages = new Pages(this)
 	makeObservable(this)
   }
 
   async init() {
-	return this.data.teams.init()
+	return this.data.init()
+  }
+
+
+  @action
+  reset() {
+	this.data.teams.reset()
   }
 }
 
-const store = new Store({})
+const store = new Store()
 
 export default store
 

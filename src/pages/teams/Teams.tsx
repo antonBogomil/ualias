@@ -11,23 +11,23 @@ import FooterWrapper from "../../components/footer";
 import {t} from "../../store/dictionary";
 import {Store} from "../../store";
 import DataStore from "../../store/data";
+import ButtonLink from "../../components/ButtonLink";
+import {paths} from "../../constants";
 
 
 type IProps = {
   store?: TeamsPage,
-  handleCreateTable: any,
   history: any,
 }
 
 const styles = require('./style.scss')
 
 
-export const Teams = ({store, handleCreateTable, ...rest}: IProps) => {
-  console.log(rest);
+export const Teams = ({store}: IProps) => {
   return (
 	<div className={cn(styles.root)}>
 	  <Page key={'teams'}>
-		<Typography variant="h4" component="h4" gutterBottom>Teams list</Typography>
+		<Typography variant="h4" component="h4" gutterBottom>{t('TEAM_LIST')}</Typography>
 		<List onDelete={store.handleDelete} items={store.list}/>
 		<Fab onClick={store.handleToggleModal} color="secondary" aria-label="add">
 		  <AddIcon/>
@@ -44,16 +44,13 @@ export const Teams = ({store, handleCreateTable, ...rest}: IProps) => {
 
 	  <FooterWrapper>
 		<div/>
-		<Button
-		  disabled={!store.isReady}
-		  variant={"contained"}
-		  color={"primary"}
-		  onClick={() => handleCreateTable(() => {
-			rest.history.push('/table')
-		  })}
+		<ButtonLink disabled={!store.isReady}
+					variant={"contained"}
+					color={"primary"}
+					to={paths.TABLE}
 		>
 		  {t('NEXT')}
-		</Button>
+		</ButtonLink>
 	  </FooterWrapper>
 	</div>
   );
@@ -63,7 +60,6 @@ export const Teams = ({store, handleCreateTable, ...rest}: IProps) => {
 export default withStore((store) => {
   return {
 	store: store.pages.teams,
-	handleCreateTable: store.pages.handleCreateTable
   }
 })(Teams);
 

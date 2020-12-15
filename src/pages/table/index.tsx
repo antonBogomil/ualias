@@ -1,53 +1,55 @@
 import * as React from 'react';
+import {useEffect} from 'react';
 import {Table, TableBody, TableCell, TableHead, TableRow} from "@material-ui/core";
 import {withStore} from "../../tools";
 import Page from "../../components/Page";
-import {Store} from "../../store";
-import {useEffect} from "react";
-import {TablePage} from "../../store/pages";
 import FooterWrapper from "../../components/footer";
 import ButtonLink from "../../components/ButtonLink";
 import {t} from "../../store/dictionary";
+import {paths} from "../../constants";
+import {RootRouteProps} from "../../types";
 
-const TeamsTable = ({store}: { store: TablePage }) => {
 
+const TeamsTable = ({store, ...rest}: RootRouteProps) => {
+  const teams = store.data.teams
   useEffect(() => {
-	console.log(store);
-	if (!store.isActive) {
-	  window.location.href = '/teams'
+	if (teams.isEmpty) {
+	  rest.history.push(paths.TEAMS)
 	}
-  })
-  if (store.isActive) return (
+  }, [])
+  return (
 	<Page>
 	  <Table>
 		<TableHead>
 		  <TableRow>
 			<TableCell align="left">#</TableCell>
-			<TableCell align="left">Name</TableCell>
-			<TableCell align="left">Rounds</TableCell>
-			<TableCell align="left">Points</TableCell>
+			<TableCell align="left">{t('NAME')}</TableCell>
+			<TableCell align="left">{t('ROUNDS')}</TableCell>
+			<TableCell align="left">{t('POINTS')}</TableCell>
 		  </TableRow>
 		</TableHead>
 		<TableBody>
-		  {store.rows.map((row, i) => (
-			<TableRow key={row.team.id}>
-			  <TableCell align="left" scope="row">
-				{i}
-			  </TableCell>
-			  <TableCell align="left">{row.team.name}</TableCell>
-			  <TableCell align="left">{row.getPlayedTimes()}</TableCell>
-			  <TableCell align="left">{row.getPoints()}</TableCell>
-			</TableRow>
-		  ))}
+		  {teams.getTeams().map((row, i) => {
+			return (
+			  <TableRow style={{backgroundColor: row === teams.nextActive && '#ccc'}} key={row.id}>
+				<TableCell align="left" scope="row">
+				  {i}
+				</TableCell>
+				<TableCell align="left">{row.name}</TableCell>
+				<TableCell align="left">{row.rounds}</TableCell>
+				<TableCell align="left">{row.points}</TableCell>
+			  </TableRow>
+			)
+		  })}
 		</TableBody>
 	  </Table>
 	  <FooterWrapper>
 		<ButtonLink variant={"contained"} color={"secondary"} to={'/teams'}>{t("BACK")}</ButtonLink>
-		<ButtonLink variant={"contained"} color={"primary"} to={'/playing'}>{t("NEXT")}</ButtonLink>
+		<ButtonLink variant={"contained"} color={"primary"} autoFocus={true} to={'/playing'}>{t("NEXT")}</ButtonLink>
 	  </FooterWrapper>
 	</Page>
   );
-  else return null
+
 };
 
-export default withStore(store => ({store: store.pages.table}))(TeamsTable);
+export default withStore(store => ({store: store}))(TeamsTable);

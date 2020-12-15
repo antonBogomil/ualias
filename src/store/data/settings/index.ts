@@ -1,5 +1,5 @@
 class Settings {
-  roundTimeSeconds: number = 6
+  roundTimeSeconds: number = 10
   negativeSkip: boolean = false
 }
 

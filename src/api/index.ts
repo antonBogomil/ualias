@@ -1,17 +1,39 @@
 import storage from "../tools/LocalStorage";
-import {Teams, Words} from "./types";
+import {State, Teams, Words} from "./types";
+import TeamModel from "../models/Team";
 
 const Api = {
-  getTeams: function (): Promise<Teams> {
+  getTeams(): Promise<Teams> {
 	return get('/api/teams')
   },
-  saveTeams: function (data) {
+  getActiveTeam(): Promise<{ team: TeamModel }> {
+	return get('/api/team-active')
+  },
+  saveTeams(data) {
 	return post('/api/teams', data)
   },
 
-
-  getWords: function (): Promise<Words> {
+  getState(): Promise<State> {
+	return get('/api/state')
+  },
+  saveState(data) {
+	return post('/api/state', data)
+  },
+  saveActiveTeam(team: TeamModel) {
+	return post('/api/team-active', {
+	  team,
+	})
+  },
+  getWords(): Promise<Words> {
 	return get('/api/words')
+  },
+
+  getRound(): Promise<any> {
+	return get('/api/round')
+  },
+
+  saveRound(data) {
+	return post('/api/round', data)
   }
 }
 export default Api

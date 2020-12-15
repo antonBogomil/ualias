@@ -46,10 +46,10 @@ const TeamsCreateModal = observer(({isOpen, name, errors, handleClose, handleSav
 	  </DialogContent>
 	  <DialogActions>
 		<Button onClick={handleClose} color="secondary">
-		  Cancel
+		  {t('CANCEL')}
 		</Button>
 		<Button onClick={handleSaveClick} color="primary">
-		  Save
+		  {t('SAVE')}
 		</Button>
 	  </DialogActions>
 	</Dialog>

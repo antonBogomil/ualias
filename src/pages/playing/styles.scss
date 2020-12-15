@@ -14,3 +14,67 @@
     overflow-y: scroll;
   }
 }
+
+.container {
+  height: 100%;
+  position: relative;
+
+  .backdrop {
+    z-index: 101;
+  }
+
+  .points {
+    position: absolute;
+    left: 0;
+    padding: 12px 0;
+    font-size: 20px;
+  }
+
+  .time {
+    position: absolute;
+    right: 0;
+    padding: 12px 0;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+
+    span {
+      display: inline-block;
+      width: 30px;
+      margin-left: 6px;
+      text-align: right;
+    }
+  }
+
+  .word {
+    font-size: 30px;
+    padding: 24px 12px;
+  }
+
+
+  .control {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 60%;
+    margin: auto;
+    width: 60%;
+
+    &.paused {
+      opacity: 0;
+    }
+
+    .button {
+      &.correctButton {
+        background-color: #4CAF50;
+      }
+
+      .buttonIcon {
+        font-size: 50px;
+      }
+
+    }
+  }
+}

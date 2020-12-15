@@ -1,40 +1,17 @@
-import {computed, makeObservable, observable} from "mobx";
 import TeamsPage from "./Teams";
 import {Store} from "../";
+import Play from "./Play";
 
-export class TablePage {
-  private readonly root: Store
+
+export default class Pages {
+  private readonly root: Store;
+  readonly teams: TeamsPage;
+  readonly play: Play;
 
   constructor(root: Store) {
 	this.root = root
-  }
-
-  @computed
-  get isActive() {
-	return this.root.data.table.records.length > 0
-  }
-
-  @computed
-  get rows() {
-	return this.root.data.table.records
-  }
-}
-
-export default class Pages {
-  @observable teams: TeamsPage;
-  table: TablePage
-  private root: Store;
-
-  constructor(root: Store, initialData: any) {
-	this.root = root
 	this.teams = new TeamsPage(root)
-	this.table = new TablePage(root)
-	makeObservable(this)
-  }
-
-  handleCreateTable = (next) => {
-	this.root.data.createTable()
-	next()
+	this.play = new Play(root)
   }
 
 }

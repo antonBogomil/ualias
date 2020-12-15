@@ -1,136 +1,82 @@
 import * as React from 'react';
 import Page from "../../components/Page";
-import {action, autorun, computed, makeObservable, observable} from "mobx";
 import {withStore} from "../../tools";
-import DataStore from "store/data";
-import FooterWrapper from "../../components/footer";
-import dict from "../../store/dictionary";
-import {GamePanel, Navigation, PostRoundComponent, PreRoundComponent} from "./components";
-import RoundStore from "../../store/data/Round";
-import {Component} from "react";
-import {withRouter, RouteComponentProps} from 'react-router-dom';
-import {Store} from "../../store";
-
+import {PostRoundComponent, PreRoundComponent} from "./components";
+import {RouteComponentProps, withRouter} from 'react-router-dom';
+import {paths} from "../../constants";
+import GamePanel from "./GamePanel";
+import Play from "store/pages/Play";
+import TeamModel from "../../models/Team";
+import RoundStore from "../../models/Round";
 
 interface IProps extends RouteComponentProps<any> {
-  store?: Store
+  store?: Play,
+  team: TeamModel,
 }
 
-export class Playing extends React.Component<IProps> {
-  roundStore: RoundStore
-
-  @observable timer = null
-  @observable displayWord: string = ''
-  @observable time: number = 0
-  @observable pause: boolean
-  @observable isRunning: boolean
-
-  constructor(props) {
-	super(props);
-	makeObservable(this)
-	autorun(() => {
-	  if (this.isTimeout) {
-		this.finish()
-	  }
-	})
-  }
-
-
+class Playing extends React.Component<IProps> {
   componentDidMount() {
-	this.checkAccess()
-	this.roundStore = new RoundStore(this.props.store.data.settings)
-  }
-
-  checkAccess() {
-	if (this.props.store.pages.teams.isReady) {
-	  return true
+	if (this.props.team) {
+	  this.props.store.init()
 	} else {
-	  this.props.history.push('/teams')
+	  this.props.history.push(paths.TEAMS)
 	}
   }
 
-
-  @action setRunning = (isRunning: boolean) => this.isRunning = isRunning
-
-  @computed get isTimeout() {
-	return this.time === this.props.store.data.settings.roundTimeSeconds
+  componentWillUnmount() {
+	this.props.store.setRound(null)
   }
 
-  @action setPause = (pause: boolean) => this.pause = pause
-
-  @action handleStart = () => {
-	this.nextWord()
-	this.setRunning(true)
-	this.time = 0
-	this.runTimer()
-  }
-  @action finish = () => {
-	this.stopTimer()
-	this.setRunning(false)
+  onRoundEnd = () => {
+	this.props.store.setResults()
+	this.props.history.push(paths.TABLE)
   }
 
-  handlePause = () => {
-	this.setPause(true)
-	this.stopTimer()
-  }
-  handlePauseEnd = () => {
-	this.setPause(false)
-	this.runTimer()
-  }
-
-  @action incrementTime = () => this.time++
-
-  @action stopTimer = () => {
-	clearInterval(this.timer)
-	this.timer = null
-  }
-  @action runTimer = () => {
-	this.timer = setInterval(this.incrementTime, 1000)
-  }
-  @action nextWord = () => this.displayWord = this.props.store.data.words.next()
-
-  handeChange = (word: string, value: boolean) => {
-	return () => {
-	  this.roundStore.setWord(word, value)
-	  this.nextWord()
-	}
-  }
 
   render() {
-	if (!dict.isReady) return null
+	const {
+	  round,
+	  onStart,
+	  onNextWord,
+	} = this.props.store
 	return (
 	  <Page>
-		{
-		  this.isRunning ?
-			<GamePanel
-			  points={this.roundStore.points}
-			  time={this.time}
-			  handeChange={this.handeChange}
-			  word={this.displayWord}/>
-			:
-			this.isTimeout ?
+		{round ?
+		  <>
+			{round.isTimeout ?
 			  <PostRoundComponent
-				points={this.roundStore.points}
-				handleChange={this.roundStore.setWord}
-				results={this.roundStore.results}
-			  /> :
-			  <PreRoundComponent/>
+				onClick={this.onRoundEnd}
+				onChange={round.setWord}
+				points={round.points}
+				results={round.results}
+			  />
+			  : <GamePanel
+				points={round.points}
+				time={round.time}
+				onChange={onNextWord}
+				isPause={round.isPaused}
+				onPause={round.setPause}
+				word={round.word}
+			  />
+			}
+		  </>
+		  :
+		  <>
+			<PreRoundComponent
+			  team={this.props.team}
+			  onStart={onStart}
+			/>
+		  </>
 		}
-		<FooterWrapper>
-		  <Navigation
-			isPause={this.pause}
-			isRunning={this.isRunning}
-			isTimeout={this.isTimeout}
-			handlePause={this.handlePause}
-			handlePauseEnd={this.handlePauseEnd}
-			handleStart={this.handleStart}
-		  />
-		</FooterWrapper>
 	  </Page>
 	);
   }
 }
 
-const PlayingWtihStore = withStore((store) => ({store}))(Playing);
+const PlayingWtihStore = withStore(
+  (store) => ({
+	store: store.pages.play,
+	team: store.data.teams.nextActive,
+  }))(Playing);
 const PlayingWtihStoreReuter = withRouter(PlayingWtihStore)
 export default PlayingWtihStoreReuter

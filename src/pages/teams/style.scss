@@ -3,6 +3,12 @@
 
   .list {
     list-style: none;
+
+    .item {
+      &.active{
+        background: #ccc;
+      }
+    }
   }
 
   .fixedButton {

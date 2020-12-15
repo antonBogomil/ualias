@@ -4,6 +4,8 @@ import React from "react";
 import {ErrorCodes} from "../../constants/teams";
 import {Store} from "../index";
 
+const defaultName = 'Команда _'
+
 class TeamsPage {
   // readonly root: Store
   readonly data: TeamsData;
@@ -14,13 +16,13 @@ class TeamsPage {
   constructor(root: Store) {
 	this.data = root.data.teams
 	this.isOpenModal = false
-	this.name = 'Молодая команда'
+	this.name = defaultName
 	makeObservable(this)
   }
 
   @computed
   get isReady() {
-	return this.data.teams.length >= 2
+	return this.data.getTeams().length >= 2
   }
 
   @computed
@@ -30,7 +32,7 @@ class TeamsPage {
 
   @computed
   get list() {
-	return this.data.teams
+	return this.data.getTeams()
   }
 
   @computed
@@ -99,13 +101,12 @@ class TeamsPage {
   }
   @action handleDelete = (id: string) => {
 	this.data.remove(id)
-	this.data.save()
   }
 
 
   @action
   reset() {
-	this.name = ''
+	this.name = defaultName
 	this.resetErrors()
   }
 

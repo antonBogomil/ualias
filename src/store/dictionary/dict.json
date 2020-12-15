@@ -1,12 +1,20 @@
 {
-  "SAVE": "Save",
-  "CANCEL": "Cancel",
-  "TEAM_LIST": "Team list",
-  "TEAM_NAME_PLACEHOLDER": "Enter teams name",
-  "CREATE_TEAM": "Create team",
-  "LABEL_TEAM": "Team",
+  "SAVE": "Зберегти",
+  "CANCEL": "Відмінити",
+  "TEAM_LIST": "Список учасників",
+  "NAME": "Назва",
+  "TEAM_NAME_PLACEHOLDER": "Назвіть команду:",
+  "CREATE_TEAM": "Стврення команд",
+  "LABEL_TEAM": "Команда",
   "READY": "Ви готові?",
   "POINTS": "Балів",
   "NEXT": "Далі",
-  "START": "Почати"
+  "START": "Почати",
+  "BACK": "Назад",
+  "ROUNDS": "Раундів",
+  "CONTINUE": "Відновити",
+  "PAUSE": "Пауза",
+  "STOP": "Зупинити",
+  "EDIT": "Змінити",
+  "END_ROUND": "Закінчити раунд"
 }

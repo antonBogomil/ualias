@@ -1,4 +1,4 @@
-import React, {ReactNode, useEffect} from 'react';
+import React, {ReactNode} from 'react';
 import {observer} from "mobx-react";
 
 const styles = require('../styles/main.scss')
